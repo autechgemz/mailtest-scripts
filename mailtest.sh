@@ -1,19 +1,19 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 TIMEWAIT=1
 
-SMTP_SERVER="localhost"
+SMTP_SERVER="192.168.56.201"
 SMTP_PORT="25"
 SMTP_HELLO="example.com"
 
 FROM_EMAIL="test1@example.com"
-TO_EMAIL="test1@example.com test2@example.com test3@example.com"
-CC_EMAIL="cc1@example.com cc2@example.com cc3@example.com"
-BCC_EMAIL="bcc1@example.com bcc2@example.com bcc3@example.com"
+TO_EMAIL=("test1@example.com" "test2@example.com" "test3@example.com")
+CC_EMAIL=("cc1@example.com")
+BCC_EMAIL=("bcc1@example.com")
 
 SUBJECT="Test Mail"
-TO_HEADER=$(echo ${TO_EMAIL} | sed 's/ /, /g')
-CC_HEADER=$(echo ${CC_EMAIL} | sed 's/ /, /g')
+TO_HEADER=$(IFS=,; echo "${TO_EMAIL[*]}")
+CC_HEADER=$(IFS=,; echo "${CC_EMAIL[*]}")
 
 MESSAGE=$(cat <<EOF
 Hello.
@@ -33,22 +33,12 @@ send_line() {
   send_line "HELO ${SMTP_HELLO}"
   send_line "MAIL FROM: ${FROM_EMAIL}"
 
-  for email in ${TO_EMAIL}; do
+  ALL_RECIPIENTS=($(printf "%s\n" "${TO_EMAIL[@]}" "${CC_EMAIL[@]}" "${BCC_EMAIL[@]}" | sort -u))
+  for email in "${ALL_RECIPIENTS[@]}"; do
     send_line "RCPT TO: ${email}"
   done
-  if [ -n "${CC_EMAIL}" ]; then
-    for email in ${CC_EMAIL}; do
-      send_line "RCPT TO: ${email}"
-    done
-  fi
-  if [ -n "${BCC_EMAIL}" ]; then
-    for email in ${BCC_EMAIL}; do
-      send_line "RCPT TO: ${email}"
-    done
-  fi
 
   send_line "DATA"
-
   echo "From: ${FROM_EMAIL}"
   echo "To: ${TO_HEADER}"
   if [ -n "${CC_HEADER}" ]; then
