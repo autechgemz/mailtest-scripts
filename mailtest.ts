@@ -1,6 +1,6 @@
 const net = require("net");
 
-const smtpServer: string = "192.168.56.201";
+const smtpServer: string = "localhost";
 const smtpPort: number = 25;
 const helloMessage: string = "example.com";
 const fromEmail: string = "test1@example.com";
