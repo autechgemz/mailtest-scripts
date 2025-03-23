@@ -1,5 +1,5 @@
 {
-  "name": "bun-mailtest",
+  "name": "mailtest-scripts",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest"

@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "bun-mailtest",
+      "name": "mailtest-scripts",
       "devDependencies": {
         "@types/bun": "latest",
       },
